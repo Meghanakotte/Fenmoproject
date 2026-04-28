@@ -102,4 +102,39 @@ router.get('/expenses', (req, res) => {
   }
 });
 
+// DELETE /api/expenses/:id - Delete an expense
+router.delete('/expenses/:id', (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ error: 'Expense ID is required' });
+  }
+
+  try {
+    const db = getDatabase();
+
+    // Check if expense exists
+    const results = db.exec(
+      'SELECT id FROM expenses WHERE id = ?',
+      [id]
+    );
+
+    if (!results.length || !results[0].values.length) {
+      return res.status(404).json({ error: 'Expense not found' });
+    }
+
+    // Delete the expense
+    db.run(
+      'DELETE FROM expenses WHERE id = ?',
+      [id]
+    );
+
+    getSaveDb()();
+
+    res.json({ message: 'Expense deleted successfully', id });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete expense', message: err.message });
+  }
+});
+
 module.exports = router;

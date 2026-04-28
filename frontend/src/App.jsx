@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import ExpenseForm from './components/ExpenseForm';
 import ExpenseList from './components/ExpenseList';
+import ExpenseSummary from './components/ExpenseSummary';
 
 function App() {
   const [expenses, setExpenses] = useState([]);
+  const [allExpenses, setAllExpenses] = useState([]); // Track unfiltered expenses for summary
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -17,21 +19,25 @@ function App() {
     setLoading(true);
     setError(null);
     try {
-      let url = `${API_BASE_URL}/expenses?sort=date_desc`;
-      if (categoryFilter !== 'All') {
-        url += `&category=${encodeURIComponent(categoryFilter)}`;
-      }
-      
-      const response = await fetch(url);
-      if (!response.ok) {
+      // Always fetch all expenses (unfiltered for summary)
+      const allResponse = await fetch(`${API_BASE_URL}/expenses?sort=date_desc`);
+      if (!allResponse.ok) {
         throw new Error('Failed to fetch expenses');
       }
       
-      const data = await response.json();
-      setExpenses(data.expenses || []);
+      const allData = await allResponse.json();
+      const allExpensesData = allData.expenses || [];
+      setAllExpenses(allExpensesData); // Store all for summary
+
+      // Apply category filter for display
+      let filteredExpenses = allExpensesData;
+      if (categoryFilter !== 'All') {
+        filteredExpenses = allExpensesData.filter(e => e.category === categoryFilter);
+      }
+      setExpenses(filteredExpenses);
 
       // Extract unique categories
-      const uniqueCategories = ['All', ...new Set(data.expenses?.map(e => e.category) || [])];
+      const uniqueCategories = ['All', ...new Set(allExpensesData?.map(e => e.category) || [])];
       setCategories(uniqueCategories);
     } catch (err) {
       setError(err.message);
@@ -101,6 +107,11 @@ function App() {
               </div>
             </div>
 
+            {/* Show summary only when viewing all expenses */}
+            {selectedCategory === 'All' && allExpenses.length > 0 && (
+              <ExpenseSummary expenses={allExpenses} />
+            )}
+
             {loading ? (
               <div className="loading">Loading expenses...</div>
             ) : expenses.length === 0 ? (
@@ -109,7 +120,12 @@ function App() {
               </div>
             ) : (
               <>
-                <ExpenseList expenses={expenses} />
+                <ExpenseList 
+                  expenses={expenses}
+                  onDelete={handleExpenseCreated}
+                  onDeleteSuccess={handleExpenseCreated}
+                  apiBaseUrl={API_BASE_URL}
+                />
                 <div className="total-section">
                   <div className="total">
                     <span>Total: </span>
