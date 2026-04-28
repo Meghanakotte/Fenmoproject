@@ -15,6 +15,17 @@ app.use(bodyParser.json());
 // Use routes
 app.use('/api', expenseRoutes);
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Welcome to Fenmo API', 
+    endpoints: {
+      health: '/health',
+      expenses: '/api/expenses'
+    }
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'Backend is running' });
