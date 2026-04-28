@@ -269,38 +269,23 @@ Invoke-RestMethod -Uri "http://localhost:5000/api/expenses" -Method Post -Conten
 
 ## 🚢 Deployment
 
-### Backend Deployment (Render, Railway, Heroku)
+### Backend Deployment (Railway.app)
 
-```bash
-# Set environment variables
-PORT=5000
-NODE_ENV=production
+1. Connect your GitHub repository to [Railway](https://railway.app/).
+2. Set the root directory to `backend`.
+3. Set environment variables: `PORT=5000` and `NODE_ENV=production`.
+4. Deploy and generate a public domain.
 
-# Deploy from backend/ folder
-```
+### Frontend Deployment (Vercel)
 
-### Frontend Deployment (Vercel, Netlify, GitHub Pages)
+1. Connect your GitHub repository to [Vercel](https://vercel.com/).
+2. Set the root directory to `frontend`.
+3. Add environment variable: `VITE_API_URL` (pointing to your Railway backend).
+4. Deploy!
 
-```bash
-# Build production bundle
-cd frontend
-npm run build
+## 💾 Database Persistence
 
-# Output is in dist/ folder
-```
-
-### Environment Variables
-
-**Frontend (.env):**
-```
-VITE_API_URL=https://your-backend-url.com/api
-```
-
-**Backend (.env):**
-```
-PORT=5000
-NODE_ENV=production
-```
+For SQLite persistence on Railway, add a **Volume** mounted to the database directory. Alternatively, you can easily upgrade to Railway's managed PostgreSQL service.
 
 ## 💡 Intentional Trade-offs
 

@@ -1,9 +1,0 @@
-services:
-  - type: web
-    name: fenmo-backend
-    runtime: node
-    buildCommand: bash render-build.sh
-    startCommand: cd backend && npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
