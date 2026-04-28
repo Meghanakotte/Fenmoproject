@@ -2,8 +2,7 @@ services:
   - type: web
     name: fenmo-backend
     runtime: node
-    rootDir: backend
-    buildCommand: cd backend && npm install
+    buildCommand: npm run install-backend
     startCommand: npm start
     envVars:
       - key: NODE_ENV
