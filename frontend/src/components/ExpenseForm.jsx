@@ -4,12 +4,13 @@ import './ExpenseForm.css';
 function ExpenseForm({ onExpenseCreated, apiBaseUrl }) {
   const [formData, setFormData] = useState({
     amount: '',
-    category: 'Food',
+    category: '', // Changed from 'Food' to empty
     description: '',
     date: new Date().toISOString().split('T')[0],
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
   const [success, setSuccess] = useState(false);
 
   const categories = ['Food', 'Transport', 'Entertainment', 'Utilities', 'Shopping', 'Health', 'Other'];
@@ -18,33 +19,77 @@ function ExpenseForm({ onExpenseCreated, apiBaseUrl }) {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'amount' ? parseFloat(value) || '' : value
+      [name]: name === 'amount' ? (value === '' ? '' : parseFloat(value)) : value
     }));
     setError(null);
+    
+    // Real-time validation
+    validateField(name, value);
+  };
+
+  const validateField = (name, value) => {
+    const errors = { ...fieldErrors };
+    
+    if (name === 'amount') {
+      const amount = parseFloat(value);
+      if (value === '') {
+        errors.amount = 'Amount is required';
+      } else if (isNaN(amount)) {
+        errors.amount = 'Amount must be a number';
+      } else if (amount <= 0) {
+        errors.amount = 'Amount must be greater than 0';
+      } else if (amount > 1000000) {
+        errors.amount = 'Amount seems too large';
+      } else {
+        delete errors.amount;
+      }
+    } else if (name === 'date') {
+      if (!value) {
+        errors.date = 'Date is required';
+      } else {
+        const selectedDate = new Date(value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (selectedDate > today) {
+          errors.date = 'Date cannot be in the future';
+        } else {
+          delete errors.date;
+        }
+      }
+    } else if (name === 'category') {
+      if (!value) {
+        errors.category = 'Category is required';
+      } else {
+        delete errors.category;
+      }
+    }
+    
+    setFieldErrors(errors);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSuccess(false);
-
-    // Validation
-    if (!formData.amount || formData.amount <= 0) {
-      setError('Amount must be a positive number');
-      return;
-    }
-
-    if (!formData.date) {
-      setError('Please select a date');
-      return;
-    }
-
-    if (!formData.category) {
-      setError('Please select a category');
-      return;
-    }
-
     setLoading(true);
+
+    // Validate all fields
+    const newErrors = {};
+    if (!formData.amount || formData.amount <= 0) {
+      newErrors.amount = 'Amount must be greater than 0';
+    }
+    if (!formData.date) {
+      newErrors.date = 'Date is required';
+    }
+    if (!formData.category) {
+      newErrors.category = 'Category is required';
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setFieldErrors(newErrors);
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch(`${apiBaseUrl}/expenses`, {
@@ -57,7 +102,7 @@ function ExpenseForm({ onExpenseCreated, apiBaseUrl }) {
           category: formData.category,
           description: formData.description,
           date: formData.date,
-          idempotency_key: `${Date.now()}-${Math.random()}`, // Unique key for each submission
+          idempotency_key: `${Date.now()}-${Math.random()}`,
         }),
       });
 
@@ -69,15 +114,13 @@ function ExpenseForm({ onExpenseCreated, apiBaseUrl }) {
       setSuccess(true);
       setFormData({
         amount: '',
-        category: 'Food',
+        category: '',
         description: '',
         date: new Date().toISOString().split('T')[0],
       });
+      setFieldErrors({});
 
-      // Show success message
       setTimeout(() => setSuccess(false), 3000);
-
-      // Notify parent
       onExpenseCreated();
     } catch (err) {
       setError(err.message);
@@ -106,7 +149,9 @@ function ExpenseForm({ onExpenseCreated, apiBaseUrl }) {
           onChange={handleChange}
           placeholder="0.00"
           required
+          className={fieldErrors.amount ? 'input-error' : ''}
         />
+        {fieldErrors.amount && <div className="field-error">{fieldErrors.amount}</div>}
       </div>
 
       <div className="form-group">
@@ -117,11 +162,14 @@ function ExpenseForm({ onExpenseCreated, apiBaseUrl }) {
           value={formData.category}
           onChange={handleChange}
           required
+          className={fieldErrors.category ? 'input-error' : ''}
         >
+          <option value="" disabled>Select Category</option>
           {categories.map(cat => (
             <option key={cat} value={cat}>{cat}</option>
           ))}
         </select>
+        {fieldErrors.category && <div className="field-error">{fieldErrors.category}</div>}
       </div>
 
       <div className="form-group">
@@ -133,7 +181,9 @@ function ExpenseForm({ onExpenseCreated, apiBaseUrl }) {
           value={formData.date}
           onChange={handleChange}
           required
+          className={fieldErrors.date ? 'input-error' : ''}
         />
+        {fieldErrors.date && <div className="field-error">{fieldErrors.date}</div>}
       </div>
 
       <div className="form-group">

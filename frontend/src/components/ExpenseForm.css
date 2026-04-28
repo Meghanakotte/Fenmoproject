@@ -44,6 +44,23 @@
   color: #bdc3c7;
 }
 
+.input-error {
+  border-color: #e74c3c !important;
+  background-color: #fef5f5;
+}
+
+.input-error:focus {
+  border-color: #e74c3c !important;
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+.field-error {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: -4px;
+}
+
 .submit-btn {
   padding: 12px 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
