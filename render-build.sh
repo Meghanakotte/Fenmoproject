@@ -1,13 +1,8 @@
 #!/bin/bash
 set -e
 
-# Navigate to backend directory
+echo "Installing backend dependencies..."
 cd backend
-
-# Install dependencies
 npm install
+echo "Backend dependencies installed successfully"
 
-# Return to root (for logging clarity)
-cd ..
-
-echo "Build completed successfully"
