@@ -6,7 +6,7 @@ function ExpenseForm({ onExpenseCreated, apiBaseUrl }) {
     amount: '',
     category: '', // Changed from 'Food' to empty
     description: '',
-    date: new Date().toISOString().split('T')[0],
+    date: '', // Initially empty
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -116,7 +116,7 @@ function ExpenseForm({ onExpenseCreated, apiBaseUrl }) {
         amount: '',
         category: '',
         description: '',
-        date: new Date().toISOString().split('T')[0],
+        date: '', // Reset to empty
       });
       setFieldErrors({});
 
