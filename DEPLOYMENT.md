@@ -3,117 +3,83 @@
 ## 🚀 Quick Deployment Summary
 
 This guide walks through deploying Fenmo to production using:
-- **Backend**: Railway.app (excellent for Node.js + SQLite)
-- **Frontend**: Vercel (best for React/Vite)
+- **Backend**: Render.com (free tier available)
+- **Frontend**: Vercel (free tier available)
 
-Total time: ~10 minutes | Cost: Free tier available
+Total time: ~15 minutes | Cost: Free
 
 ---
 
 ## 📝 Prerequisites
 
 1. **GitHub Repository**: https://github.com/Meghanakotte/Fenmoproject (Already set up ✅)
-2. **Railway Account**: https://railway.app/ (Sign up with GitHub)
+2. **Render Account**: https://render.com/ (Sign up with GitHub)
 3. **Vercel Account**: https://vercel.com/ (Sign up with GitHub)
 
 ---
 
-## 🔧 **BACKEND DEPLOYMENT (Railway.app)**
+## 🔧 **BACKEND DEPLOYMENT (Render.com)**
 
-### Step 1: Create Railway Account
-1. Go to https://railway.app
-2. Click "Login" → "Sign up with GitHub"
-3. Authorize Railway to access your GitHub account
+### Step 1: Create Render Account
+1. Go to https://render.com
+2. Click "Sign up with GitHub"
+3. Authorize Render to access your GitHub account
 
-### Step 2: Create Backend Project
+### Step 2: Create Backend Service
 
-1. Click **"New Project"** → **"Deploy from GitHub repo"**
+1. Click **"New +"** → **"Web Service"**
 2. Select repository: **Fenmoproject**
-3. Click **"Deploy Now"**
-4. Once the project is created, click on the service to configure it:
-   - **Settings** → **Root Directory**: Set to `backend`
-   - **Settings** → **Build Command**: `npm install`
-   - **Settings** → **Start Command**: `npm start`
+3. Configure settings:
+   - **Name**: `fenmo-backend`
+   - **Branch**: `main`
+   - **Root Directory**: `backend`
+   - **Runtime**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
 
-### Step 3: Configure Environment Variables
+4. Environment Variables:
+   ```
+   PORT=5000
+   NODE_ENV=production
+   ```
 
-Click the **"Variables"** tab and add:
-```
-PORT=5000
-NODE_ENV=production
-```
+5. Pricing Plan: **Free**
 
-### Step 4: Generate Domain
+6. Click **"Create Web Service"**
 
-1. Go to **"Settings"** → **"Public Networking"**
-2. Click **"Generate Domain"**
-3. You'll get a URL like: `https://fenmoproject-production.up.railway.app`
+### Step 3: Copy Backend URL
 
-### Step 5: Copy Backend URL
+Wait for the deployment to finish. You'll get a URL like:
+`https://fenmo-backend.onrender.com`
 
-```
-Backend API URL: https://your-railway-url.up.railway.app/api
-```
+**Your API URL will be**: `https://fenmo-backend.onrender.com/api`
 
 ---
 
 ## 🌐 **FRONTEND DEPLOYMENT (Vercel)**
 
-### Step 1: Create Vercel Account
-
+### Step 1: Import Project
 1. Go to https://vercel.com
-2. Click "Sign up with GitHub"
-3. Authorize Vercel to access your GitHub account
+2. Click **"Add New..."** → **"Project"**
+3. Select your repository: **Fenmoproject**
 
-### Step 2: Import Your Project
-
-1. Click **"Add New..."** → **"Project"**
-2. Select your repository: **Fenmoproject**
-3. Vercel will auto-detect it's a Monorepo
-
-### Step 3: Configure Frontend
-
+### Step 2: Configure Frontend
 1. **Root Directory**: Select `./frontend`
 2. **Framework Preset**: `Vite`
 3. **Build Command**: `npm run build`
 4. **Output Directory**: `dist`
 
-### Step 4: Environment Variables
+### Step 3: Environment Variables
+Add:
+`VITE_API_URL` = `https://fenmo-backend.onrender.com/api`
 
-Click **"Environment Variables"** and add:
-
-```
-VITE_API_URL = https://your-railway-url.up.railway.app/api
-```
-
-### Step 5: Deploy
-
-Click **"Deploy"**
-
-- Vercel will build your frontend
-- Takes ~1-2 minutes
-- You'll get a URL like: `https://fenmoproject.vercel.app`
+### Step 4: Deploy
+Click **"Deploy"**.
 
 ---
 
 ## ✅ **VERIFICATION**
-
 1. Open your Vercel URL.
-2. Add an expense.
-3. Verify it appears in the list.
-4. Refresh the page to ensure persistence.
+2. Add an expense and verify it appears in the list.
 
----
-
-## 💾 **DATABASE PERSISTENCE**
-
-Railway uses an ephemeral filesystem by default. For long-term persistence with SQLite on Railway:
-1. Go to **"Settings"** → **"Volumes"**
-2. Click **"Add Volume"**
-3. Mount it to `/app/backend/db` (or where your `expenses.db` is located)
-
-Alternatively, upgrade to **Railway's PostgreSQL** for a more robust production experience.
-
----
-
-**✅ Your Fenmo application is now production-ready! 🎉**
+**Note**: On Render's free tier, the backend may take a minute to "wake up" after inactivity.

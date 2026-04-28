@@ -269,23 +269,20 @@ Invoke-RestMethod -Uri "http://localhost:5000/api/expenses" -Method Post -Conten
 
 ## 🚢 Deployment
 
-### Backend Deployment (Railway.app)
+### Backend Deployment (Render.com)
 
-1. Connect your GitHub repository to [Railway](https://railway.app/).
-2. Set the root directory to `backend`.
-3. Set environment variables: `PORT=5000` and `NODE_ENV=production`.
-4. Deploy and generate a public domain.
+1. Connect your GitHub repository to [Render](https://render.com/).
+2. Create a new **Web Service**.
+3. Set the root directory to `backend`.
+4. Set environment variables: `PORT=5000` and `NODE_ENV=production`.
+5. Deploy!
 
 ### Frontend Deployment (Vercel)
 
 1. Connect your GitHub repository to [Vercel](https://vercel.com/).
 2. Set the root directory to `frontend`.
-3. Add environment variable: `VITE_API_URL` (pointing to your Railway backend).
+3. Add environment variable: `VITE_API_URL` (pointing to your Render backend).
 4. Deploy!
-
-## 💾 Database Persistence
-
-For SQLite persistence on Railway, add a **Volume** mounted to the database directory. Alternatively, you can easily upgrade to Railway's managed PostgreSQL service.
 
 ## 💡 Intentional Trade-offs
 
