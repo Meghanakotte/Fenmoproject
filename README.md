@@ -11,6 +11,7 @@ A **production-ready** full-stack expense tracking application built with **Node
 ### ✨ Core Features
 
 ✅ **Record Expenses** - Create entries with amount, category, description, and date  
+✅ **Delete Expenses** - Easily remove incorrect or old entries with confirmation  
 ✅ **View Expenses** - Browse expenses in a sorted, filterable list  
 ✅ **Filter by Category** - Quickly find expenses by category  
 ✅ **Sort by Date** - Expenses sorted by date (newest first) or oldest first  
@@ -140,6 +141,19 @@ GET /expenses?category=Food&sort=date_desc
       "created_at": "2026-04-28T14:29:51.655Z"
     }
   ]
+}
+```
+
+#### Delete Expense
+```http
+DELETE /expenses/:id
+```
+
+**Response (200):**
+```json
+{
+  "message": "Expense deleted successfully",
+  "id": "uuid"
 }
 ```
 
